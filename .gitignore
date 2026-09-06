@@ -1,0 +1,94 @@
+# ─── Dépendances ───────────────────────────────────────────
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# ─── Builds ────────────────────────────────────────────────
+client/dist/
+dist/
+
+# ─── Environnement et secrets ──────────────────────────────
+.env
+server/.env
+*.env.local
+
+# ─── Uploads et fichiers utilisateur ───────────────────────
+server/uploads/
+uploads/
+
+# ─── Sauvegardes ───────────────────────────────────────────
+*.bak
+*.sql.bak
+backups/
+
+# ─── OS / éditeurs ─────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# ─── Logs ──────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Docker ────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ─── Fichiers temporaires ──────────────────────────────────
+*.tmp
+*.temp
+
+# ─── Captures de référence (non nécessaires dans le dépôt) ──
+img_New_Appli/
+
+# ─── Scripts Python de traitement d'images ─────────────────
+crop_*.py
+extract_pdf.py
+
+# ─── Ancien déploiement ────────────────────────────────────
+AGEO_deploy/
+
+# ─── Captures d'écran et PDFs de référence ──────────────────
+*.png
+*.pdf
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.webp
+!1606814358-erplain-etat-des-stocks-niveau-de-stocklogicielgestionstock.png
+!client/public/**/*.png
+!client/public/**/*.jpg
+!client/public/**/*.ico
+
+# ─── Base SQLite (ancienne) ────────────────────────────────
+*.db
+*.db-shm
+*.db-wal
+
+# ─── Fichiers divers inutiles ──────────────────────────────
+guide-ageo.html
+ecosystem.config.js
+start-ageo.vbs
+Cmd demarrage auto.txt
+Probleme Sql Server.txt
+
+# ─── Scripts batch Windows (déploiement local) ──────────────
+*.bat
+
+# ─── Frontend compilé (sera reconstruit par Docker) ─────────
+client/assets/
+client/dist/
+
+# ─── Fichiers racine inutiles ───────────────────────────────
+/package.json
+/package-lock.json
+
+# ─── Tests et scripts locaux ────────────────────────────────
+server/test-rapports.js
+server/scripts/backup-db.ps1

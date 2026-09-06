@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+.git
+img_New_Appli
+AGEO_deploy
+AGEO_deploy.zip
+server/.env
+server/*.log
+client/dist
+extract_pdf.py
+*.bak
+nginx/
+traefik/

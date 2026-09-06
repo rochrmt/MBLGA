@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Default brand palette: Cyan ── */
+:root {
+  --brand-50:  236 254 255;
+  --brand-100: 207 250 254;
+  --brand-200: 165 243 252;
+  --brand-300: 103 232 249;
+  --brand-400: 34 211 238;
+  --brand-500: 6 182 212;
+  --brand-600: 8 145 178;
+  --brand-700: 14 116 144;
+  --brand-800: 21 94 117;
+  --brand-900: 22 78 99;
+  --font-app: 'Outfit', system-ui, sans-serif;
+}
+
+/* ── Light theme (default) ── */
+:root,
+.light {
+  --bg: 248 250 252;
+  --surface: 255 255 255;
+  --surface-2: 248 250 252;
+  --border: 226 232 240;
+  --text-primary: 30 41 59;
+  --text-secondary: 71 85 105;
+  --text-muted: 100 116 139;
+  --sidebar: 30 41 59;
+  --sidebar-hover: 51 65 85;
+  --input-bg: 248 250 252;
+  --table-head-bg: 248 250 252;
+  --table-row-hover: 248 250 252;
+  --scrollbar: 203 213 225;
+  --scrollbar-hover: 148 163 184;
+  color-scheme: light;
+}
+
+/* ── Dark theme ── */
+.dark {
+  --bg: 15 23 42;
+  --surface: 30 41 59;
+  --surface-2: 51 65 85;
+  --border: 51 65 85;
+  --text-primary: 226 232 240;
+  --text-secondary: 148 163 184;
+  --text-muted: 100 116 139;
+  --sidebar: 15 23 42;
+  --sidebar-hover: 51 65 85;
+  --input-bg: 30 41 59;
+  --table-head-bg: 30 41 59;
+  --table-row-hover: 51 65 85;
+  --scrollbar: 71 85 105;
+  --scrollbar-hover: 100 116 139;
+  color-scheme: dark;
+}
+
+/* ── Blue Night theme ── */
+.theme-blue-night {
+  --bg: 8 15 35;
+  --surface: 15 25 55;
+  --surface-2: 25 40 75;
+  --border: 30 50 90;
+  --text-primary: 200 220 255;
+  --text-secondary: 140 165 210;
+  --text-muted: 90 115 165;
+  --sidebar: 8 15 35;
+  --sidebar-hover: 25 40 75;
+  --input-bg: 15 25 55;
+  --table-head-bg: 15 25 55;
+  --table-row-hover: 25 40 75;
+  --scrollbar: 50 75 120;
+  --scrollbar-hover: 80 110 160;
+  color-scheme: dark;
+}
+
+/* ── Sepia theme ── */
+.theme-sepia {
+  --bg: 243 233 216;
+  --surface: 252 245 231;
+  --surface-2: 238 226 205;
+  --border: 220 205 180;
+  --text-primary: 74 52 32;
+  --text-secondary: 107 79 52;
+  --text-muted: 139 115 85;
+  --sidebar: 74 52 32;
+  --sidebar-hover: 107 79 52;
+  --input-bg: 252 245 231;
+  --table-head-bg: 238 226 205;
+  --table-row-hover: 238 226 205;
+  --scrollbar: 180 160 130;
+  --scrollbar-hover: 139 115 85;
+  color-scheme: light;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: rgb(var(--bg));
+  color: rgb(var(--text-primary));
+  font-family: var(--font-app), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border shadow-card;
+    background: rgb(var(--surface));
+    border-color: rgb(var(--border) / 0.8);
+  }
+  .card-hover {
+    @apply card transition-shadow hover:shadow-card-hover;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white hover:bg-brand-700 shadow-sm;
+  }
+  .btn-secondary {
+    @apply btn border;
+    background: rgb(var(--surface));
+    border-color: rgb(var(--border));
+    color: rgb(var(--text-secondary));
+  }
+  .btn-secondary:hover {
+    background: rgb(var(--surface-2));
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent;
+    color: rgb(var(--text-secondary));
+  }
+  .btn-ghost:hover {
+    background: rgb(var(--surface-2));
+  }
+  .input {
+    @apply w-full rounded-lg border px-3.5 py-2.5 text-sm outline-none transition
+           focus:border-brand-500 focus:ring-2 focus:ring-brand-100;
+    background: rgb(var(--input-bg));
+    border-color: rgb(var(--border));
+    color: rgb(var(--text-primary));
+  }
+  .input::placeholder {
+    color: rgb(var(--text-muted));
+  }
+  .label {
+    @apply block text-sm font-semibold mb-1.5;
+    color: rgb(var(--text-secondary));
+  }
+  .stat-card {
+    @apply card p-5 flex items-center gap-4;
+  }
+  .stat-icon {
+    @apply grid h-12 w-12 place-items-center rounded-xl;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+  .badge-success {
+    @apply badge bg-emerald-500/15 text-emerald-400;
+  }
+  .badge-warning {
+    @apply badge bg-amber-500/15 text-amber-400;
+  }
+  .badge-danger {
+    @apply badge bg-red-500/15 text-red-400;
+  }
+  .badge-info {
+    @apply badge bg-brand-500/15 text-brand-400;
+  }
+  .badge-neutral {
+    @apply badge;
+    background: rgb(var(--surface-2));
+    color: rgb(var(--text-secondary));
+  }
+  .table-wrap {
+    @apply card overflow-hidden;
+  }
+  .table-th {
+    @apply text-left text-xs font-semibold uppercase tracking-wide px-4 py-3;
+    color: rgb(var(--text-muted));
+    background: rgb(var(--table-head-bg));
+  }
+  .table-td {
+    @apply px-4 py-3.5 text-sm border-t;
+    color: rgb(var(--text-secondary));
+    border-color: rgb(var(--border));
+  }
+  .table-row-hover {
+    @apply transition-colors;
+  }
+  .table-row-hover:hover {
+    background: rgb(var(--table-row-hover) / 0.5);
+  }
+  .nav-link {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all;
+  }
+  .nav-link-active {
+    @apply bg-brand-600 text-white shadow-sm;
+  }
+  .nav-link-inactive {
+    color: rgb(var(--text-muted));
+  }
+  .nav-link-inactive:hover {
+    background: rgb(var(--sidebar-hover));
+    color: white;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgb(var(--scrollbar)); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--scrollbar-hover)); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ── Dark & Blue Night mode overrides for hardcoded slate classes ── */
+.dark .text-slate-800, .theme-blue-night .text-slate-800 { color: rgb(var(--text-primary)) !important; }
+.dark .text-slate-700, .theme-blue-night .text-slate-700 { color: rgb(var(--text-primary)) !important; }
+.dark .text-slate-600, .theme-blue-night .text-slate-600 { color: rgb(var(--text-secondary)) !important; }
+.dark .text-slate-500, .theme-blue-night .text-slate-500 { color: rgb(var(--text-muted)) !important; }
+.dark .text-slate-400, .theme-blue-night .text-slate-400 { color: rgb(var(--text-muted)) !important; }
+.dark .text-slate-300, .theme-blue-night .text-slate-300 { color: rgb(var(--text-muted)) !important; }
+
+.dark .bg-white, .theme-blue-night .bg-white { background-color: rgb(var(--surface)) !important; }
+.dark .bg-slate-50, .theme-blue-night .bg-slate-50 { background-color: rgb(var(--surface-2)) !important; }
+.dark .bg-slate-100, .theme-blue-night .bg-slate-100 { background-color: rgb(var(--surface-2)) !important; }
+
+.dark .border-slate-200, .theme-blue-night .border-slate-200 { border-color: rgb(var(--border)) !important; }
+.dark .border-slate-100, .theme-blue-night .border-slate-100 { border-color: rgb(var(--border)) !important; }
+.dark .border-slate-300, .theme-blue-night .border-slate-300 { border-color: rgb(var(--border)) !important; }
+
+.dark .bg-brand-50, .theme-blue-night .bg-brand-50 { background-color: rgb(var(--brand-500) / 0.15) !important; }
+.dark .bg-brand-100, .theme-blue-night .bg-brand-100 { background-color: rgb(var(--brand-500) / 0.15) !important; }
+.dark .text-brand-600, .theme-blue-night .text-brand-600 { color: rgb(var(--brand-400)) !important; }
+.dark .text-brand-700, .theme-blue-night .text-brand-700 { color: rgb(var(--brand-400)) !important; }
+
+.dark .bg-emerald-50, .theme-blue-night .bg-emerald-50 { background-color: rgb(16 185 129 / 0.15) !important; }
+.dark .bg-emerald-100, .theme-blue-night .bg-emerald-100 { background-color: rgb(16 185 129 / 0.15) !important; }
+.dark .text-emerald-600, .theme-blue-night .text-emerald-600 { color: rgb(52 211 153) !important; }
+.dark .text-emerald-700, .theme-blue-night .text-emerald-700 { color: rgb(52 211 153) !important; }
+
+.dark .bg-amber-50, .theme-blue-night .bg-amber-50 { background-color: rgb(245 158 11 / 0.15) !important; }
+.dark .bg-amber-100, .theme-blue-night .bg-amber-100 { background-color: rgb(245 158 11 / 0.15) !important; }
+.dark .text-amber-600, .theme-blue-night .text-amber-600 { color: rgb(251 191 36) !important; }
+.dark .text-amber-700, .theme-blue-night .text-amber-700 { color: rgb(251 191 36) !important; }
+
+.dark .bg-red-50, .theme-blue-night .bg-red-50 { background-color: rgb(239 68 68 / 0.15) !important; }
+.dark .bg-red-100, .theme-blue-night .bg-red-100 { background-color: rgb(239 68 68 / 0.15) !important; }
+.dark .text-red-600, .theme-blue-night .text-red-600 { color: rgb(248 113 113) !important; }
+.dark .text-red-700, .theme-blue-night .text-red-700 { color: rgb(248 113 113) !important; }
+
+.dark .bg-violet-50, .theme-blue-night .bg-violet-50 { background-color: rgb(139 92 246 / 0.15) !important; }
+.dark .text-violet-600, .theme-blue-night .text-violet-600 { color: rgb(167 139 250) !important; }
+
+.dark .bg-blue-50, .theme-blue-night .bg-blue-50 { background-color: rgb(59 130 246 / 0.15) !important; }
+.dark .text-blue-600, .theme-blue-night .text-blue-600 { color: rgb(96 165 250) !important; }
+
+.dark .hover\:bg-slate-50:hover, .theme-blue-night .hover\:bg-slate-50:hover { background-color: rgb(var(--surface-2)) !important; }
+.dark .hover\:bg-slate-100:hover, .theme-blue-night .hover\:bg-slate-100:hover { background-color: rgb(var(--surface-2)) !important; }
+.dark .hover\:text-slate-700:hover, .theme-blue-night .hover\:text-slate-700:hover { color: rgb(var(--text-primary)) !important; }
+.dark .hover\:text-brand-600:hover, .theme-blue-night .hover\:text-brand-600:hover { color: rgb(var(--brand-400)) !important; }
+
+/* ── Print styles for bulletin de paie ── */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: white !important; }
+  body * { visibility: hidden; }
+  #bulletin-print, #bulletin-print * { visibility: visible; }
+  #bulletin-print { position: absolute; left: 0; top: 0; width: 100%; }
+  .print\:hidden { display: none !important; }
+  @page { margin: 1.5cm; size: A4; }
+}

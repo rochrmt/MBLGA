@@ -1,0 +1,69 @@
+# ============================================================
+#  Traefik — Reverse proxy global (multi-apps + SSL auto)
+#  Emplacement : /opt/traefik/docker-compose.yml
+#  Démarrage  : docker compose up -d
+#  Dashboard  : https://traefik.mbila.pro (protégé)
+# ============================================================
+
+services:
+  traefik:
+    image: traefik:v3.4
+    container_name: traefik
+    restart: unless-stopped
+    environment:
+      - DOCKER_API_VERSION=1.41
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - traefik-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+      # Dashboard (accessible via le domaine défini ci-dessous)
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+      - ./dynamic:/dynamic:ro
+    command:
+      # ── Entrypoints ──────────────────────────────────────────────────────
+      - "--entrypoints.web.address=:80"
+      # Redirection automatique HTTP → HTTPS
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      - "--entrypoints.websecure.address=:443"
+
+      # ── Providers ────────────────────────────────────────────────────────
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=traefik-proxy"
+      - "--providers.file.filename=/dynamic/dynamic.yml"
+
+      # ── SSL Let's Encrypt ────────────────────────────────────────────────
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      # ── Staging (pour test — décommenter pour éviter le rate limit) ──────
+      # - "--certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.letsencrypt.acme.email=rochrmt@gmail.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+
+      # ── Dashboard ────────────────────────────────────────────────────────
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+
+      # ── Logs ─────────────────────────────────────────────────────────────
+      - "--log.level=INFO"
+      - "--accesslog=true"
+    labels:
+      - "traefik.enable=true"
+      # Dashboard accessible sur traefik.mbila.pro
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.mbila.pro`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+
+networks:
+  traefik-proxy:
+    name: traefik-proxy
+    external: true

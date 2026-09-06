@@ -1,0 +1,39 @@
+# ============================================================
+#  Traefik — Configuration dynamique
+#  Fichier : /opt/traefik/dynamic/dynamic.yml
+#  Permet d'ajouter des configurations sans redémarrer Traefik
+# ============================================================
+
+# Options TLS globales
+tls:
+  options:
+    default:
+      sniStrict: true
+      minVersion: VersionTLS12
+      cipherSuites:
+        - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+
+# Redirections HTTP → HTTPS (en plus de celle configurée dans entrypoints)
+http:
+  # Middleware : compression gzip
+  middlewares:
+    gzip:
+      compress:
+        excludedContentTypes:
+          - "image/jpeg"
+          - "image/png"
+          - "video/mp4"
+
+    # Middleware : headers de sécurité
+    security-headers:
+      headers:
+        frameDeny: true
+        sslRedirect: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000

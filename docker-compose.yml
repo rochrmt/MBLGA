@@ -1,0 +1,72 @@
+# ============================================================
+#  AGEO — Stack Docker (app + MySQL) avec Traefik
+#  Prérequis : Traefik doit tourner sur /opt/traefik/
+#  Usage : docker compose up -d --build
+#  Accès : https://mblga.mbila.pro (SSL automatique)
+# ============================================================
+
+services:
+  # ── Base de données MySQL (interne, non exposée) ────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: mblga-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Mblga@2026!
+      MYSQL_DATABASE: mblga
+    volumes:
+      - mblga-mysql-data:/var/lib/mysql
+    expose:
+      - "3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+
+  # ── Application (backend + frontend) ─────────────────────────────────────
+  app:
+    build: .
+    container_name: mblga-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PORT: "3001"
+      DB_SERVER: mysql
+      DB_PORT: "3306"
+      DB_NAME: mblga
+      DB_USER: root
+      DB_PASSWORD: Mblga@2026!
+      JWT_SECRET: 043a33fe46fa399710f812ec57bbd9c33e31230f78be64babf58687f3d086d8c6bc3af9f1a55a0d51c2e9bbf64ca68c8
+      JWT_EXPIRES: 10h
+      LICENCE_SECRET: 4460c20686978acedbd33e472fca1e5c9f490ff95a3a84bba255f84ebcf9487b2406ef2851993dfee78853bb7b4f7dec
+      LICENCE_KEY: ""
+    volumes:
+      - mblga-uploads:/app/server/uploads
+    expose:
+      - "3001"
+    restart: unless-stopped
+    networks:
+      - default
+      - traefik-proxy
+    labels:
+      - "traefik.enable=true"
+      # Router : domaine de l'app
+      - "traefik.http.routers.mblga.rule=Host(`mblga.mbila.pro`)"
+      - "traefik.http.routers.mblga.entrypoints=websecure"
+      - "traefik.http.routers.mblga.tls.certresolver=letsencrypt"
+      # Service : port interne de l'app
+      - "traefik.http.services.mblga.loadbalancer.server.port=3001"
+      # Middlewares : gzip + sécurité
+      - "traefik.http.routers.mblga.middlewares=gzip@file,security-headers@file"
+
+volumes:
+  mblga-mysql-data:
+  mblga-uploads:
+
+networks:
+  traefik-proxy:
+    name: traefik-proxy
+    external: true
