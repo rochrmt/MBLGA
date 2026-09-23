@@ -1,4 +1,4 @@
-# Application de Gestion d'Entreprise
+# MBLGA — Application de Gestion d'Entreprise
 
 Application web complète de gestion d'entreprise : clients, produits, commandes, ventes, caisse, facturation, rapports, personnel (employés, congés, paie), journal d'activité et paramètres.
 
@@ -14,8 +14,8 @@ Application web complète de gestion d'entreprise : clients, produits, commandes
 
 ```bash
 # 1. Cloner le dépôt
-git clone https://github.com/VOTRE-COMPTE/VOTRE-REPO.git
-cd VOTRE-REPO
+git clone https://github.com/rochrmt/MBLGA.git mblga-app
+cd mblga-app
 
 # 2. Configurer les variables d'environnement
 #    Éditer docker-compose.yml : JWT_SECRET, mots de passe MySQL, etc.
@@ -56,7 +56,7 @@ npm run dev
 |---|---|---|
 | `DB_SERVER` | Hôte MySQL | `localhost` |
 | `DB_PORT` | Port MySQL | `3306` |
-| `DB_NAME` | Nom de la base | `ageo` |
+| `DB_NAME` | Nom de la base | `mblga` |
 | `DB_USER` | Utilisateur MySQL | `root` |
 | `DB_PASSWORD` | Mot de passe MySQL | — |
 | `JWT_SECRET` | Secret JWT | — |

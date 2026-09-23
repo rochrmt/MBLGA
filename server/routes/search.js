@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
     ])
     res.json({ clients, produits, commandes, factures })
   } catch (err) {
-    console.error('[AGEO] search:', err.message)
+    console.error('[MBLGA] search:', err.message)
     res.status(500).json({ error: 'Erreur lors de la recherche' })
   }
 })

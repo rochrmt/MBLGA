@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
       res.json(rows)
     }
   } catch (err) {
-    console.error('[AGEO] rapports employes list:', err.message)
+    console.error('[MBLGA] rapports employes list:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des rapports' })
   }
 })
@@ -72,7 +72,7 @@ router.post('/upload', upload.single('fichier'), async (req, res) => {
     await log(req, { module: 'Rapports', action: 'Upload rapport employé', description: `Rapport "${titre}" uploaded par ${req.user.nom}` })
     res.status(201).json({ id })
   } catch (err) {
-    console.error('[AGEO] rapport employe upload:', err.message)
+    console.error('[MBLGA] rapport employe upload:', err.message)
     if (req.file) {
       const fp = path.join(UPLOAD_DIR, req.file.filename)
       if (fs.existsSync(fp)) fs.unlinkSync(fp)

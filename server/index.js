@@ -137,7 +137,7 @@ app.post('/api/licence/apply', async (req, res) => {
       jours_restants: result.daysLeft,
     })
   } catch (err) {
-    console.error('[AGEO] licence/apply:', err.message)
+    console.error('[MBLGA] licence/apply:', err.message)
     res.status(500).json({ error: 'Erreur lors de l\'application de la licence' })
   }
 })
@@ -192,23 +192,23 @@ async function start() {
     // Vérification de la licence au démarrage
     const lic = verifyLicence(process.env.LICENCE_KEY ?? '')
     if (!lic.valid) {
-      console.warn(`[AGEO] ⚠️  LICENCE : ${lic.reason}`)
+      console.warn(`[MBLGA] ⚠️  LICENCE : ${lic.reason}`)
     } else {
       const warn = lic.daysLeft <= 30 ? ` — ⚠️  expire dans ${lic.daysLeft} jour(s) !` : ''
-      console.log(`[AGEO] ✅ Licence valide — ${lic.payload.entreprise} (expire le ${lic.payload.expiration}${warn})`)
+      console.log(`[MBLGA] ✅ Licence valide — ${lic.payload.entreprise} (expire le ${lic.payload.expiration}${warn})`)
     }
 
     await db.initialize()
     app.listen(PORT, () => {
       if (fs.existsSync(CLIENT_DIST)) {
-        console.log(`[AGEO] Application disponible sur http://localhost:${PORT}`)
+        console.log(`[MBLGA] Application disponible sur http://localhost:${PORT}`)
       } else {
-        console.log(`[AGEO] API démarrée sur http://localhost:${PORT}`)
-        console.log(`[AGEO] Pour l'interface : cd client && npm run dev  → http://localhost:3000`)
+        console.log(`[MBLGA] API démarrée sur http://localhost:${PORT}`)
+        console.log(`[MBLGA] Pour l'interface : cd client && npm run dev  → http://localhost:3000`)
       }
     })
   } catch (err) {
-    console.error('[AGEO] Impossible de démarrer — erreur base de données:', err.message)
+    console.error('[MBLGA] Impossible de démarrer — erreur base de données:', err.message)
     process.exit(1)
   }
 }

@@ -49,7 +49,7 @@ router.get('/', async (req, res) => {
 
     res.json({ evenements: rows, stats, modules: modules.map((m) => m.module) })
   } catch (err) {
-    console.error('[AGEO] journal GET:', err.message)
+    console.error('[MBLGA] journal GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement du journal' })
   }
 })

@@ -6,7 +6,7 @@ const db = require('./database')
 // ── Création de la base si absente (utile pour Docker / première install) ────
 
 async function ensureDatabase() {
-  const dbName = process.env.DB_NAME || 'ageo'
+  const dbName = process.env.DB_NAME || 'mblga'
   const conn = await mysql.createConnection({
     host:     process.env.DB_SERVER   || 'localhost',
     port:     parseInt(process.env.DB_PORT) || 3306,
@@ -15,7 +15,7 @@ async function ensureDatabase() {
   })
   try {
     await conn.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`)
-    console.log(`[AGEO] Base de données '${dbName}' prête`)
+    console.log(`[MBLGA] Base de données '${dbName}' prête`)
   } finally {
     await conn.end()
   }
@@ -403,14 +403,14 @@ async function runMigrations() {
     for (const nom of ['Direction', 'Finance', 'Commercial', 'Technique', 'RH', 'Logistique', 'Informatique', 'Juridique']) {
       await db.exec(`INSERT INTO departements (nom) VALUES ('${nom}')`)
     }
-    console.log('[AGEO] Migration : départements par défaut insérés')
+    console.log('[MBLGA] Migration : départements par défaut insérés')
   }
 
   // Petite caisse par défaut
   const { npc } = await db.getOne('SELECT COUNT(*) AS npc FROM petite_caisse')
   if (npc === 0) {
     await db.exec(`INSERT INTO petite_caisse (nom, solde, plafond, actif) VALUES ('Petite Caisse', 0, 50000, 1)`)
-    console.log('[AGEO] Migration : petite caisse par défaut créée')
+    console.log('[MBLGA] Migration : petite caisse par défaut créée')
   }
 
   // Colonnes bulletins_paie (déjà dans CREATE TABLE, mais on garde pour bases existantes)
@@ -479,7 +479,7 @@ async function runMigrations() {
     const firstAdmin = await db.getOne("SELECT id FROM users WHERE role = 'admin' ORDER BY id LIMIT 1")
     if (firstAdmin) {
       await db.run("UPDATE users SET role = 'super_admin' WHERE id = ?", [firstAdmin.id])
-      console.log('[AGEO] Migration : premier administrateur promu super administrateur')
+      console.log('[MBLGA] Migration : premier administrateur promu super administrateur')
     }
   }
 
@@ -497,7 +497,7 @@ async function runMigrations() {
     const firstSA = await db.getOne("SELECT id FROM users WHERE role = 'super_admin' ORDER BY id LIMIT 1")
     if (firstSA) {
       await db.run("UPDATE users SET is_original = 1 WHERE id = ?", [firstSA.id])
-      console.log('[AGEO] Super admin original marqué (id=' + firstSA.id + ')')
+      console.log('[MBLGA] Super admin original marqué (id=' + firstSA.id + ')')
     }
   }
 }
@@ -513,7 +513,7 @@ async function seedData() {
     "INSERT INTO users (username, email, nom, password_hash, role, is_original) VALUES (?, ?, ?, ?, 'super_admin', 1)",
     ['admin', 'admin@entreprise.com', 'Administrateur', hash],
   )
-  console.log('[AGEO] Compte super_admin créé → email: admin@entreprise.com / mot de passe: admin1234')
+  console.log('[MBLGA] Compte super_admin créé → email: admin@entreprise.com / mot de passe: admin1234')
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
@@ -523,7 +523,7 @@ async function initialize() {
   await createTables()
   await runMigrations()
   await seedData()
-  console.log('[AGEO] Base de données MySQL prête')
+  console.log('[MBLGA] Base de données MySQL prête')
 }
 
 db.initialize = initialize

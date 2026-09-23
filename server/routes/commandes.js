@@ -24,7 +24,7 @@ router.get('/', async (_req, res) => {
     )
     res.json(rows)
   } catch (err) {
-    console.error('[AGEO] commandes GET:', err.message)
+    console.error('[MBLGA] commandes GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des commandes' })
   }
 })
@@ -43,7 +43,7 @@ router.get('/livrees-impayees', async (_req, res) => {
     )
     res.json(rows)
   } catch (err) {
-    console.error('[AGEO] commandes livrees-impayees:', err.message)
+    console.error('[MBLGA] commandes livrees-impayees:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des commandes impayées' })
   }
 })
@@ -98,7 +98,7 @@ router.post('/', async (req, res) => {
     await log(req, { module: 'Commandes', action: 'Création', description: `Commande créée : ${numero}` })
     res.status(201).json({ id, numero })
   } catch (err) {
-    console.error('[AGEO] commandes POST:', err.message)
+    console.error('[MBLGA] commandes POST:', err.message)
     res.status(500).json({ error: 'Erreur lors de la création de la commande' })
   }
 })
@@ -128,7 +128,7 @@ router.put('/:id/statut', async (req, res) => {
     await log(req, { module: 'Commandes', action: 'Statut', description: `Commande #${req.params.id} → ${statut}` })
     res.json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] commandes statut:', err.message)
+    console.error('[MBLGA] commandes statut:', err.message)
     res.status(500).json({ error: 'Erreur lors de la mise à jour du statut' })
   }
 })
@@ -141,7 +141,7 @@ router.delete('/:id', async (req, res) => {
     await log(req, { module: 'Commandes', action: 'Suppression', description: `Commande #${req.params.id} supprimée` })
     res.json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] commandes DELETE:', err.message)
+    console.error('[MBLGA] commandes DELETE:', err.message)
     res.status(500).json({ error: 'Erreur lors de la suppression' })
   }
 })

@@ -108,7 +108,7 @@ router.get('/', async (_req, res) => {
 
     res.json({ count: alerts.length, alertes: alerts })
   } catch (err) {
-    console.error('[AGEO] notifications:', err.message)
+    console.error('[MBLGA] notifications:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des notifications' })
   }
 })

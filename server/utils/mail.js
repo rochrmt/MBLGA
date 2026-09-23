@@ -42,7 +42,7 @@ async function sendMail(to, subject, html) {
     })
     return { ok: true }
   } catch (err) {
-    console.error('[AGEO] sendMail:', err.message)
+    console.error('[MBLGA] sendMail:', err.message)
     return { ok: false, error: err.message }
   }
 }

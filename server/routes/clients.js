@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
     )
     res.json(rows)
   } catch (err) {
-    console.error('[AGEO] clients GET:', err.message)
+    console.error('[MBLGA] clients GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des clients' })
   }
 })
@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
     const client = await db.getOne('SELECT * FROM clients WHERE id = ?', [id])
     res.status(201).json(client)
   } catch (err) {
-    console.error('[AGEO] clients POST:', err.message)
+    console.error('[MBLGA] clients POST:', err.message)
     res.status(500).json({ error: 'Erreur lors de la création du client' })
   }
 })
@@ -77,7 +77,7 @@ router.put('/:id', async (req, res) => {
     const client = await db.getOne('SELECT * FROM clients WHERE id = ?', [req.params.id])
     res.json(client)
   } catch (err) {
-    console.error('[AGEO] clients PUT:', err.message)
+    console.error('[MBLGA] clients PUT:', err.message)
     res.status(500).json({ error: 'Erreur lors de la mise à jour' })
   }
 })
@@ -95,7 +95,7 @@ router.delete('/:id', async (req, res) => {
     await log(req, { module: 'Clients', action: 'Suppression', description: `Client #${req.params.id} supprimé` })
     res.json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] clients DELETE:', err.message)
+    console.error('[MBLGA] clients DELETE:', err.message)
     res.status(500).json({ error: 'Erreur lors de la suppression' })
   }
 })

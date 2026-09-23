@@ -2,8 +2,8 @@ node_modules
 **/node_modules
 .git
 img_New_Appli
-AGEO_deploy
-AGEO_deploy.zip
+MBLGA_deploy
+MBLGA_deploy.zip
 server/.env
 server/*.log
 client/dist

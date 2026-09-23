@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
       evolution,
     })
   } catch (err) {
-    console.error('[AGEO] ventes GET:', err.message)
+    console.error('[MBLGA] ventes GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des ventes' })
   }
 })

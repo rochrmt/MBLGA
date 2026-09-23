@@ -1,5 +1,5 @@
 # ============================================================
-#  AGEO — Image Docker tout-en-un (backend + frontend compilé)
+#  MBLGA — Image Docker tout-en-un (backend + frontend compilé)
 #  La base MySQL est un conteneur séparé (docker-compose)
 # ============================================================
 

@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
     )
     res.json(rows)
   } catch (err) {
-    console.error('[AGEO] paie GET:', err.message)
+    console.error('[MBLGA] paie GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement de la paie' })
   }
 })
@@ -74,7 +74,7 @@ router.post('/generer', async (req, res) => {
     await log(req, { module: 'Personnel', action: 'Paie', description: `Génération paie ${mois} (${crees})` })
     res.json({ ok: true, crees })
   } catch (err) {
-    console.error('[AGEO] paie generer:', err.message)
+    console.error('[MBLGA] paie generer:', err.message)
     res.status(500).json({ error: 'Erreur lors de la génération de la paie' })
   }
 })
@@ -115,7 +115,7 @@ router.put('/:id', async (req, res) => {
     const updated = await db.getOne('SELECT * FROM bulletins_paie WHERE id = ?', [req.params.id])
     res.json(updated)
   } catch (err) {
-    console.error('[AGEO] paie PUT:', err.message)
+    console.error('[MBLGA] paie PUT:', err.message)
     res.status(500).json({ error: 'Erreur lors de la mise à jour du bulletin' })
   }
 })

@@ -47,7 +47,7 @@ router.get('/synthese', async (req, res) => {
       mensuel,
     })
   } catch (err) {
-    console.error('[AGEO] rapports synthese:', err.message)
+    console.error('[MBLGA] rapports synthese:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement de la synthèse' })
   }
 })

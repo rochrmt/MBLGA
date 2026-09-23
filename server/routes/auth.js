@@ -80,7 +80,7 @@ router.post('/login', async (req, res) => {
 
     res.json({ token, user: payload })
   } catch (err) {
-    console.error('[AGEO] Erreur login:', err.message)
+    console.error('[MBLGA] Erreur login:', err.message)
     res.status(500).json({ error: 'Erreur serveur lors de la connexion' })
   }
 })

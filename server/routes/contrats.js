@@ -40,7 +40,7 @@ router.get('/', async (_req, res) => {
     )
     res.json(rows)
   } catch (err) {
-    console.error('[AGEO] contrats GET:', err.message)
+    console.error('[MBLGA] contrats GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des contrats' })
   }
 })
@@ -95,7 +95,7 @@ router.post('/', async (req, res) => {
     const created = await db.getOne('SELECT * FROM contrats WHERE id = ?', [id])
     res.status(201).json(created)
   } catch (err) {
-    console.error('[AGEO] contrats POST:', err.message)
+    console.error('[MBLGA] contrats POST:', err.message)
     res.status(500).json({ error: 'Erreur lors de la création du contrat' })
   }
 })
@@ -126,7 +126,7 @@ router.put('/:id', async (req, res) => {
     const updated = await db.getOne('SELECT * FROM contrats WHERE id = ?', [req.params.id])
     res.json(updated)
   } catch (err) {
-    console.error('[AGEO] contrats PUT:', err.message)
+    console.error('[MBLGA] contrats PUT:', err.message)
     res.status(500).json({ error: 'Erreur lors de la mise à jour' })
   }
 })
@@ -157,7 +157,7 @@ router.post('/:id/paiement', async (req, res) => {
     const updated = await db.getOne('SELECT * FROM contrats WHERE id = ?', [req.params.id])
     res.status(201).json(updated)
   } catch (err) {
-    console.error('[AGEO] contrats paiement:', err.message)
+    console.error('[MBLGA] contrats paiement:', err.message)
     res.status(500).json({ error: "Erreur lors de l'enregistrement du paiement" })
   }
 })
@@ -204,7 +204,7 @@ router.post('/:id/facture', async (req, res) => {
     await log(req, { module: 'Contrats', action: 'Facturation', description: `Facture ${numero} générée depuis contrat ${c.reference}` })
     res.status(201).json({ id: facId, numero })
   } catch (err) {
-    console.error('[AGEO] contrats facture:', err.message)
+    console.error('[MBLGA] contrats facture:', err.message)
     res.status(500).json({ error: 'Erreur lors de la génération de la facture' })
   }
 })
@@ -216,7 +216,7 @@ router.delete('/:id', async (req, res) => {
     await log(req, { module: 'Contrats', action: 'Suppression', description: `Contrat #${req.params.id} supprimé` })
     res.json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] contrats DELETE:', err.message)
+    console.error('[MBLGA] contrats DELETE:', err.message)
     res.status(500).json({ error: 'Erreur lors de la suppression' })
   }
 })

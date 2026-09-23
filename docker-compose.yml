@@ -1,8 +1,12 @@
 # ============================================================
-#  AGEO — Stack Docker (app + MySQL) avec Traefik
+#  MBLGA — Stack Docker (app de gestion + MySQL) avec Traefik
 #  Prérequis : Traefik doit tourner sur /opt/traefik/
 #  Usage : docker compose up -d --build
 #  Accès : https://mblga.mbila.pro (SSL automatique)
+#
+#  ⚠️  Les noms de routers/services Traefik doivent être uniques
+#  sur tout le VPS. Le site vitrine (mblga.com) utilise déjà
+#  "mblga" — cette app utilise donc "mblga-app" partout.
 # ============================================================
 
 services:
@@ -53,14 +57,14 @@ services:
       - traefik-proxy
     labels:
       - "traefik.enable=true"
-      # Router : domaine de l'app
-      - "traefik.http.routers.mblga.rule=Host(`mblga.mbila.pro`)"
-      - "traefik.http.routers.mblga.entrypoints=websecure"
-      - "traefik.http.routers.mblga.tls.certresolver=letsencrypt"
-      # Service : port interne de l'app
-      - "traefik.http.services.mblga.loadbalancer.server.port=3001"
+      # Router : domaine de l'app (nom unique — "mblga" est pris par le site)
+      - "traefik.http.routers.mblga-app.rule=Host(`mblga.mbila.pro`)"
+      - "traefik.http.routers.mblga-app.entrypoints=websecure"
+      - "traefik.http.routers.mblga-app.tls.certresolver=letsencrypt"
+      # Service : port interne de l'app (nom unique — "mblga" est pris par le site)
+      - "traefik.http.services.mblga-app.loadbalancer.server.port=3001"
       # Middlewares : gzip + sécurité
-      - "traefik.http.routers.mblga.middlewares=gzip@file,security-headers@file"
+      - "traefik.http.routers.mblga-app.middlewares=gzip@file,security-headers@file"
 
 volumes:
   mblga-mysql-data:

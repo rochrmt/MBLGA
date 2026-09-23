@@ -28,7 +28,7 @@ async function log(req, { module, action, description = null, details = null }) 
       ],
     )
   } catch (err) {
-    console.warn('[AGEO] Journal: échec du log —', err.message)
+    console.warn('[MBLGA] Journal: échec du log —', err.message)
   }
 }
 

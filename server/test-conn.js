@@ -4,7 +4,7 @@ const mysql = require('mysql2/promise')
 const config = {
   host: process.env.DB_SERVER || 'localhost',
   port: parseInt(process.env.DB_PORT) || 3306,
-  database: process.env.DB_NAME || 'ageo',
+  database: process.env.DB_NAME || 'mblga',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
 }

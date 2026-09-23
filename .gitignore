@@ -51,7 +51,7 @@ crop_*.py
 extract_pdf.py
 
 # ─── Ancien déploiement ────────────────────────────────────
-AGEO_deploy/
+MBLGA_deploy/
 
 # ─── Captures d'écran et PDFs de référence ──────────────────
 *.png
@@ -72,9 +72,9 @@ AGEO_deploy/
 *.db-wal
 
 # ─── Fichiers divers inutiles ──────────────────────────────
-guide-ageo.html
+guide-mblga.html
 ecosystem.config.js
-start-ageo.vbs
+start-mblga.vbs
 Cmd demarrage auto.txt
 Probleme Sql Server.txt
 

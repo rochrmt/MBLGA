@@ -5,7 +5,7 @@ const mysql = require('mysql2/promise')
 const config = {
   host:     process.env.DB_SERVER   || 'localhost',
   port:     parseInt(process.env.DB_PORT) || 3306,
-  database: process.env.DB_NAME     || 'ageo',
+  database: process.env.DB_NAME     || 'mblga',
   user:     process.env.DB_USER     || 'root',
   password: process.env.DB_PASSWORD || '',
   waitForConnections: true,
@@ -23,11 +23,11 @@ async function getPool() {
       try {
         pool = mysql.createPool(config)
         await pool.query('SELECT 1')
-        console.log('[AGEO] Connexion MySQL établie')
+        console.log('[MBLGA] Connexion MySQL établie')
         return pool
       } catch (err) {
         if (i === MAX) throw err
-        console.warn(`[AGEO] MySQL pas encore prêt (${i}/${MAX}), nouvelle tentative dans 5s...`)
+        console.warn(`[MBLGA] MySQL pas encore prêt (${i}/${MAX}), nouvelle tentative dans 5s...`)
         await new Promise(r => setTimeout(r, 5000))
       }
     }

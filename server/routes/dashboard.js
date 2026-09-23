@@ -81,7 +81,7 @@ router.get('/', async (_req, res) => {
       commandes_recentes: commandesRecentes,
     })
   } catch (err) {
-    console.error('[AGEO] dashboard GET:', err.message)
+    console.error('[MBLGA] dashboard GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement du tableau de bord' })
   }
 })

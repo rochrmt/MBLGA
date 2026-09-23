@@ -22,7 +22,7 @@ router.get('/', async (_req, res) => {
     )
     res.json(rows)
   } catch (err) {
-    console.error('[AGEO] conges GET:', err.message)
+    console.error('[MBLGA] conges GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des congés' })
   }
 })
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
     await log(req, { module: 'Personnel', action: 'Congé', description: `Demande de congé #${id}` })
     res.status(201).json({ id })
   } catch (err) {
-    console.error('[AGEO] conges POST:', err.message)
+    console.error('[MBLGA] conges POST:', err.message)
     res.status(500).json({ error: 'Erreur lors de la création de la demande' })
   }
 })

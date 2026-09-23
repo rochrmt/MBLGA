@@ -19,7 +19,7 @@ router.get('/session/active', async (_req, res) => {
     const total = trs.reduce((s, t) => s + (t.type === 'retrait' ? -t.montant : t.montant), 0)
     res.json({ session, transactions: trs, total })
   } catch (err) {
-    console.error('[AGEO] caisse active:', err.message)
+    console.error('[MBLGA] caisse active:', err.message)
     res.status(500).json({ error: 'Erreur caisse' })
   }
 })
@@ -58,7 +58,7 @@ router.post('/open', async (req, res) => {
     await log(req, { module: 'Caisse', action: 'Ouverture', description: 'Ouverture de caisse' })
     res.status(201).json({ id })
   } catch (err) {
-    console.error('[AGEO] caisse open:', err.message)
+    console.error('[MBLGA] caisse open:', err.message)
     res.status(500).json({ error: "Erreur lors de l'ouverture de la caisse" })
   }
 })
@@ -80,7 +80,7 @@ router.post('/close', async (req, res) => {
     await log(req, { module: 'Caisse', action: 'Fermeture', description: 'Fermeture de caisse' })
     res.json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] caisse close:', err.message)
+    console.error('[MBLGA] caisse close:', err.message)
     res.status(500).json({ error: 'Erreur lors de la fermeture de la caisse' })
   }
 })
@@ -104,7 +104,7 @@ router.post('/transaction', async (req, res) => {
     await log(req, { module: 'Caisse', action: 'Transaction', description: `Encaissement ${montant}` })
     res.status(201).json({ id })
   } catch (err) {
-    console.error('[AGEO] caisse transaction:', err.message)
+    console.error('[MBLGA] caisse transaction:', err.message)
     res.status(500).json({ error: "Erreur lors de l'enregistrement de la transaction" })
   }
 })
@@ -163,7 +163,7 @@ router.post('/encaisser-commande/:id', async (req, res) => {
     await log(req, { module: 'Caisse', action: 'Encaissement commande', description: `Commande ${cmd.numero} encaissée (${montant})` })
     res.status(201).json({ id: trId, montant, numero: cmd.numero })
   } catch (err) {
-    console.error('[AGEO] caisse encaisser-commande:', err.message, err.stack)
+    console.error('[MBLGA] caisse encaisser-commande:', err.message, err.stack)
     res.status(500).json({ error: err.message || "Erreur lors de l'encaissement de la commande" })
   }
 })
@@ -205,7 +205,7 @@ router.get('/etat', async (_req, res) => {
       transactions: trs,
     })
   } catch (err) {
-    console.error('[AGEO] caisse etat:', err.message)
+    console.error('[MBLGA] caisse etat:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement de l\'état de caisse' })
   }
 })
@@ -225,7 +225,7 @@ router.get('/petite-caisse', async (_req, res) => {
     const totalAppro = trs.filter(t => t.type === 'approvisionnement').reduce((s, t) => s + t.montant, 0)
     res.json({ petite_caisse: pc, transactions: trs, total_depenses: totalDepenses, total_approvisionnements: totalAppro })
   } catch (err) {
-    console.error('[AGEO] petite caisse get:', err.message)
+    console.error('[MBLGA] petite caisse get:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement de la petite caisse' })
   }
 })
@@ -271,7 +271,7 @@ router.post('/petite-caisse/approvisionner', async (req, res) => {
     await log(req, { module: 'Caisse', action: 'Approvisionnement petite caisse', description: `Approvisionnement de ${mnt} vers la petite caisse` })
     res.status(201).json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] petite caisse appro:', err.message)
+    console.error('[MBLGA] petite caisse appro:', err.message)
     res.status(500).json({ error: "Erreur lors de l'approvisionnement" })
   }
 })
@@ -307,7 +307,7 @@ router.post('/petite-caisse/transaction', async (req, res) => {
     await log(req, { module: 'Caisse', action: `Petite caisse - ${trType}`, description: `${trType === 'depense' ? 'Dépense' : 'Entrée'} de ${mnt} ${categorie ? '(' + categorie + ')' : ''}` })
     res.status(201).json({ id })
   } catch (err) {
-    console.error('[AGEO] petite caisse transaction:', err.message)
+    console.error('[MBLGA] petite caisse transaction:', err.message)
     res.status(500).json({ error: "Erreur lors de l'enregistrement de la transaction" })
   }
 })
@@ -333,7 +333,7 @@ router.delete('/transaction/:id', async (req, res) => {
     await db.run('DELETE FROM transactions_caisse WHERE id = ?', [req.params.id])
     res.json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] caisse transaction DELETE:', err.message)
+    console.error('[MBLGA] caisse transaction DELETE:', err.message)
     res.status(500).json({ error: 'Erreur lors de la suppression' })
   }
 })
@@ -346,7 +346,7 @@ router.delete('/petite-caisse/transaction/:id', async (req, res) => {
     await db.run('DELETE FROM transactions_petite_caisse WHERE id = ?', [req.params.id])
     res.json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] petite caisse transaction DELETE:', err.message)
+    console.error('[MBLGA] petite caisse transaction DELETE:', err.message)
     res.status(500).json({ error: 'Erreur lors de la suppression' })
   }
 })
@@ -402,7 +402,7 @@ router.get('/historique', async (req, res) => {
       },
     })
   } catch (err) {
-    console.error('[AGEO] caisse historique:', err.message)
+    console.error('[MBLGA] caisse historique:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement de l\'historique' })
   }
 })

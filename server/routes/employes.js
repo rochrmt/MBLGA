@@ -11,7 +11,7 @@ router.get('/', async (_req, res) => {
     const rows = await db.getAll('SELECT * FROM employes ORDER BY nom, prenom')
     res.json(rows)
   } catch (err) {
-    console.error('[AGEO] employes GET:', err.message)
+    console.error('[MBLGA] employes GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des employés' })
   }
 })
@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
     const emp = await db.getOne('SELECT * FROM employes WHERE id = ?', [id])
     res.status(201).json(emp)
   } catch (err) {
-    console.error('[AGEO] employes POST:', err.message)
+    console.error('[MBLGA] employes POST:', err.message)
     res.status(500).json({ error: "Erreur lors de la création de l'employé" })
   }
 })
@@ -67,7 +67,7 @@ router.put('/:id', async (req, res) => {
     const emp = await db.getOne('SELECT * FROM employes WHERE id = ?', [req.params.id])
     res.json(emp)
   } catch (err) {
-    console.error('[AGEO] employes PUT:', err.message)
+    console.error('[MBLGA] employes PUT:', err.message)
     res.status(500).json({ error: 'Erreur lors de la mise à jour' })
   }
 })
@@ -85,7 +85,7 @@ router.delete('/:id', async (req, res) => {
     await log(req, { module: 'Personnel', action: 'Suppression', description: `Employé #${id} supprimé` })
     res.json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] employes DELETE:', err.message)
+    console.error('[MBLGA] employes DELETE:', err.message)
     // Last resort: deactivate
     try {
       await db.run('UPDATE employes SET actif = 0 WHERE id = ?', [req.params.id])

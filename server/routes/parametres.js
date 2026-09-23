@@ -37,7 +37,7 @@ router.put('/', async (req, res) => {
     await log(req, { module: 'Paramètres', action: 'Modification', description: 'Paramètres mis à jour' })
     res.json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] parametres PUT:', err.message)
+    console.error('[MBLGA] parametres PUT:', err.message)
     res.status(500).json({ error: "Erreur lors de l'enregistrement des paramètres" })
   }
 })
@@ -253,7 +253,7 @@ router.get('/database', async (_req, res) => {
       derniere_commande: dates.derniere,
     })
   } catch (err) {
-    console.error('[AGEO] parametres database:', err.message)
+    console.error('[MBLGA] parametres database:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des statistiques' })
   }
 })
@@ -285,9 +285,9 @@ router.get('/backup', async (req, res) => {
     res.setHeader('Content-Type', 'application/octet-stream')
     res.setHeader('Content-Disposition', `attachment; filename="sauvegarde_${ts}.bak"`)
     await log(req, { module: 'Base de données', action: 'Sauvegarde', description: 'Export des données' })
-    res.json({ _meta: { app: 'ageo', version: '1.0.0', exported_at: new Date().toISOString(), table_count: tables.length }, data: dump })
+    res.json({ _meta: { app: 'mblga', version: '1.0.0', exported_at: new Date().toISOString(), table_count: tables.length }, data: dump })
   } catch (err) {
-    console.error('[AGEO] backup:', err.message)
+    console.error('[MBLGA] backup:', err.message)
     res.status(500).json({ error: 'Erreur lors de la sauvegarde' })
   }
 })
@@ -365,7 +365,7 @@ router.post('/restore', async (req, res) => {
     await log(req, { module: 'Base de données', action: 'Restauration', description: 'Import des données' })
     res.json({ ok: true, message: 'Données restaurées avec succès' })
   } catch (err) {
-    console.error('[AGEO] restore:', err.message)
+    console.error('[MBLGA] restore:', err.message)
     res.status(500).json({ error: 'Erreur lors de la restauration: ' + err.message })
   }
 })

@@ -1,5 +1,5 @@
 // ============================================================
-//  Sauvegarde automatique de la base MySQL (ageo)
+//  Sauvegarde automatique de la base MySQL (mblga)
 //  Usage : node scripts/backup-db.js
 //  Nécessite mysqldump dans le PATH
 // ============================================================
@@ -13,7 +13,7 @@ require('dotenv').config()
 const dbConfig = {
   host: process.env.DB_SERVER || 'localhost',
   port: parseInt(process.env.DB_PORT) || 3306,
-  database: process.env.DB_NAME || 'ageo',
+  database: process.env.DB_NAME || 'mblga',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
 }

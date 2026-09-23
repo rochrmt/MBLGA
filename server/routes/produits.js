@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
     )
     res.json(rows)
   } catch (err) {
-    console.error('[AGEO] produits GET:', err.message)
+    console.error('[MBLGA] produits GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des produits' })
   }
 })
@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
     const produit = await db.getOne('SELECT * FROM produits WHERE id = ?', [id])
     res.status(201).json(produit)
   } catch (err) {
-    console.error('[AGEO] produits POST:', err.message)
+    console.error('[MBLGA] produits POST:', err.message)
     res.status(500).json({ error: 'Erreur lors de la création du produit' })
   }
 })
@@ -75,7 +75,7 @@ router.put('/:id', async (req, res) => {
     const produit = await db.getOne('SELECT * FROM produits WHERE id = ?', [req.params.id])
     res.json(produit)
   } catch (err) {
-    console.error('[AGEO] produits PUT:', err.message)
+    console.error('[MBLGA] produits PUT:', err.message)
     res.status(500).json({ error: 'Erreur lors de la mise à jour' })
   }
 })
@@ -92,7 +92,7 @@ router.delete('/:id', async (req, res) => {
     await log(req, { module: 'Produits', action: 'Suppression', description: `Produit #${req.params.id} supprimé` })
     res.json({ ok: true })
   } catch (err) {
-    console.error('[AGEO] produits DELETE:', err.message)
+    console.error('[MBLGA] produits DELETE:', err.message)
     res.status(500).json({ error: 'Erreur lors de la suppression' })
   }
 })

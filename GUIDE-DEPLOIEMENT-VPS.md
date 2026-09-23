@@ -2,7 +2,7 @@
 
 Ce guide décrit l'installation complète de l'application sur un VPS Hostinger (Ubuntu 22.04 / 24.04) avec Traefik (reverse proxy + SSL automatique).
 
-> **Exemple utilisé dans ce guide** : domaine `mbila-service.com`, VPS IP `203.0.113.50`, email `rochrmt@gmail.com`.
+> **Exemple utilisé dans ce guide** : domaine `mbila.pro`, VPS IP `203.0.113.50`, email `rochrmt@gmail.com`.
 > Remplacez ces valeurs par les vôtres.
 
 ---
@@ -17,18 +17,18 @@ Ce guide décrit l'installation complète de l'application sur un VPS Hostinger 
 
 ### 1.2 Nom de domaine (OBLIGATOIRE pour SSL)
 
-Vous devez posséder un nom de domaine (ex: `mbila-service.com`) et créer des **enregistrements DNS A** pointant vers l'IP de votre VPS.
+Vous devez posséder un nom de domaine (ex: `mbila.pro`) et créer des **enregistrements DNS A** pointant vers l'IP de votre VPS.
 
 Chez votre gestionnaire de domaine (Hostinger, Cloudflare, OVH, etc.) → **DNS / Zone DNS** :
 
 | Type | Nom / Hôte | Valeur / Cible | TTL |
 |------|------------|----------------|-----|
-| A    | `ageo`     | `203.0.113.50` | 3600 |
+| A    | `mblga`     | `203.0.113.50` | 3600 |
 | A    | `traefik`  | `203.0.113.50` | 3600 |
 
 > **Explication** :
-> - `ageo.mbila-service.com` → l'application AGEO
-> - `traefik.mbila-service.com` → le dashboard Traefik
+> - `mblga.mbila.pro` → l'application MBLGA
+> - `traefik.mbila.pro` → le dashboard Traefik
 >
 > Pour ajouter d'autres apps plus tard, créez d'autres sous-domaines (ex: `app2`, `blog`, etc.) pointant vers la même IP.
 
@@ -36,10 +36,10 @@ Chez votre gestionnaire de domaine (Hostinger, Cloudflare, OVH, etc.) → **DNS 
 
 ```bash
 # Sur le VPS ou sur votre PC
-dig ageo.mbila-service.com +short
+dig mblga.mbila.pro +short
 # Doit retourner : 203.0.113.50
 
-dig traefik.mbila-service.com +short
+dig traefik.mbila.pro +short
 # Doit retourner : 203.0.113.50
 ```
 
@@ -91,12 +91,12 @@ Dans le panel Hostinger → **VPS → Pare-feu / Security** :
 
 Traefik gère le HTTPS automatiquement (Let's Encrypt) et permet d'héberger plusieurs applications sur le même VPS avec un seul reverse proxy.
 
-### 3.1 Cloner le projet AGEO
+### 3.1 Cloner le projet MBLGA
 
 ```bash
 cd /opt
-git clone https://github.com/rochrmt/Ageo.git ageo
-cd ageo
+git clone https://github.com/rochrmt/MBLGA.git mblga-app
+cd mblga-app
 ```
 
 > Si le repo est privé, Git demandera vos identifiants :
@@ -123,8 +123,8 @@ mkdir -p /opt/traefik/letsencrypt
 ### 3.4 Copier la configuration Traefik
 
 ```bash
-cp /opt/ageo/traefik/docker-compose.yml /opt/traefik/docker-compose.yml
-cp /opt/ageo/traefik/dynamic/dynamic.yml /opt/traefik/dynamic/dynamic.yml
+cp /opt/mblga-app/traefik/docker-compose.yml /opt/traefik/docker-compose.yml
+cp /opt/mblga-app/traefik/dynamic/dynamic.yml /opt/traefik/dynamic/dynamic.yml
 ```
 
 ### 3.5 Éditer la configuration Traefik
@@ -152,10 +152,10 @@ nano /opt/traefik/docker-compose.yml
    # AVANT
    - "traefik.http.routers.dashboard.rule=Host(`traefik.votre-domaine.com`)"
    # APRÈS
-   - "traefik.http.routers.dashboard.rule=Host(`traefik.mbila-service.com`)"
+   - "traefik.http.routers.dashboard.rule=Host(`traefik.mbila.pro`)"
    ```
 
-   > Le dashboard Traefik sera accessible sur `https://traefik.mbila-service.com`.
+   > Le dashboard Traefik sera accessible sur `https://traefik.mbila.pro`.
    > Il montre toutes vos apps, certificats SSL, et le trafic en temps réel.
 
 ### 3.6 Démarrer Traefik
@@ -180,12 +180,12 @@ docker compose logs -f traefik
 
 ---
 
-## 4. Configurer AGEO
+## 4. Configurer MBLGA
 
-### 4.1 Éditer le docker-compose.yml d'AGEO
+### 4.1 Éditer le docker-compose.yml d'MBLGA
 
 ```bash
-cd /opt/ageo
+cd /opt/mblga-app
 nano docker-compose.yml
 ```
 
@@ -193,9 +193,9 @@ nano docker-compose.yml
 
 ```yaml
 # AVANT
-- "traefik.http.routers.ageo.rule=Host(`ageo.votre-domaine.com`)"
+- "traefik.http.routers.mblga-app.rule=Host(`mblga.votre-domaine.com`)"
 # APRÈS
-- "traefik.http.routers.ageo.rule=Host(`ageo.mbila-service.com`)"
+- "traefik.http.routers.mblga-app.rule=Host(`mblga.mbila.pro`)"
 ```
 
 **2. Changer le mot de passe MySQL** dans `mysql.environment` et `app.environment` :
@@ -219,10 +219,10 @@ Copiez le résultat et remplacez la valeur dans `app.environment` :
 JWT_SECRET: d874f3bb86debb314eb424af233d01669f041233b416477d560c4132092580af3c87be9e3007a828d413b0b8ad31e18c
 ```
 
-### 4.2 Construire et démarrer AGEO
+### 4.2 Construire et démarrer MBLGA
 
 ```bash
-cd /opt/ageo
+cd /opt/mblga-app
 docker compose up -d --build
 ```
 
@@ -244,15 +244,15 @@ docker compose ps
 
 Vous devriez voir :
 ```
-[AGEO] ✅ Licence valide
-[AGEO] Base de données MySQL prête
-[AGEO] Application disponible sur http://localhost:3001
-[AGEO] Connexion MySQL établie
+[MBLGA] ✅ Licence valide
+[MBLGA] Base de données MySQL prête
+[MBLGA] Application disponible sur http://localhost:3001
+[MBLGA] Connexion MySQL établie
 ```
 
 ### 4.4 Accéder à l'application
 
-Dans un navigateur : **`https://ageo.mbila-service.com`**
+Dans un navigateur : **`https://mblga.mbila.pro`**
 
 - **Email** : `admin@entreprise.com`
 - **Mot de passe** : `admin1234`
@@ -293,7 +293,7 @@ Chez votre gestionnaire de domaine, ajoutez un nouvel enregistrement A :
 
 Vérifiez la propagation :
 ```bash
-dig app2.mbila-service.com +short
+dig app2.mbila.pro +short
 # Doit retourner : 203.0.113.50
 ```
 
@@ -320,7 +320,7 @@ services:
       # Activer Traefik pour ce conteneur
       - "traefik.enable=true"
       # Domaine d'accès
-      - "traefik.http.routers.app2.rule=Host(`app2.mbila-service.com`)"
+      - "traefik.http.routers.app2.rule=Host(`app2.mbila.pro`)"
       # Utiliser le port HTTPS
       - "traefik.http.routers.app2.entrypoints=websecure"
       # SSL automatique via Let's Encrypt
@@ -347,7 +347,11 @@ networks:
 | `traefik.http.services.{nom}.loadbalancer.server.port=XXXX` | Port interne du conteneur |
 | `traefik.http.routers.{nom}.middlewares=gzip@file,security-headers@file` | Active gzip + sécurité |
 
-> **Important** : Le nom `app2` dans les labels doit être **unique** par application. Ne réutilisez pas le même nom que celui d'AGEO (`ageo`).
+> **Important** : Le nom `app2` dans les labels doit être **unique** par application. Ne réutilisez **jamais** un nom déjà pris sur le VPS :
+> - `mblga-app` → cette application de gestion (`mblga.mbila.pro`)
+> - `mblga` → le site vitrine PHP (`mblga.com` / `www.mblga.com`, projet `/opt/mblga-demo`)
+>
+> ⚠️ Deux conteneurs avec le même nom de router/service Traefik se marchent dessus : le dernier démarré écrase l'autre et un seul des deux sites fonctionne à la fois.
 
 ### 6.4 Démarrer le nouveau projet
 
@@ -361,7 +365,7 @@ Traefik détecte automatiquement le nouveau conteneur et génère le certificat 
 ### 6.5 Accéder
 
 ```
-https://app2.mbila-service.com
+https://app2.mbila.pro
 ```
 
 ### 6.6 Schéma de l'architecture
@@ -371,9 +375,10 @@ Internet
    │
    ▼
 Traefik (ports 80 + 443)
-   ├── ageo.mbila-service.com    → ageo-app:3001
-   ├── app2.mbila-service.com    → app2:3000
-   ├── traefik.mbila-service.com → dashboard Traefik
+   ├── mblga.com + www.mblga.com → mblga:80       (site vitrine PHP)
+   ├── mblga.mbila.pro           → mblga-app:3001 (cette app de gestion)
+   ├── app2.mbila.pro            → app2:3000
+   ├── traefik.mbila.pro         → dashboard Traefik
    └── (ajoutez autant d'apps que voulu)
 ```
 
@@ -386,7 +391,7 @@ Si vous aviez déjà déployé avec la configuration Nginx précédente :
 ### 7.1 Arrêter l'ancienne stack
 
 ```bash
-cd /opt/ageo
+cd /opt/mblga-app
 docker compose down
 ```
 
@@ -395,7 +400,7 @@ docker compose down
 ### 7.2 Mettre à jour le projet
 
 ```bash
-cd /opt/ageo
+cd /opt/mblga-app
 git pull origin main
 ```
 
@@ -404,16 +409,16 @@ git pull origin main
 ```bash
 docker network create traefik-proxy
 mkdir -p /opt/traefik/{dynamic,letsencrypt}
-cp /opt/ageo/traefik/docker-compose.yml /opt/traefik/
-cp /opt/ageo/traefik/dynamic/dynamic.yml /opt/traefik/dynamic/
+cp /opt/mblga-app/traefik/docker-compose.yml /opt/traefik/
+cp /opt/mblga-app/traefik/dynamic/dynamic.yml /opt/traefik/dynamic/
 nano /opt/traefik/docker-compose.yml   # email + domaine dashboard
 cd /opt/traefik && docker compose up -d
 ```
 
-### 7.4 Configurer et redémarrer AGEO
+### 7.4 Configurer et redémarrer MBLGA
 
 ```bash
-cd /opt/ageo
+cd /opt/mblga-app
 nano docker-compose.yml   # changer le domaine + mots de passe
 docker compose up -d --build
 ```
@@ -422,7 +427,7 @@ docker compose up -d --build
 
 ```bash
 docker compose ps
-# 3 conteneurs : ageo-mysql, ageo-app, traefik
+# 3 conteneurs : mblga-mysql, mblga-app, traefik
 ```
 
 ---
@@ -453,7 +458,7 @@ systemctl restart sshd
 ### 8.3 Changer le mot de passe MySQL
 
 ```bash
-docker exec -it ageo-mysql mysql -u root -pANCIEN_MDP -e "ALTER USER 'root'@'%' IDENTIFIED BY 'NOUVEAU_MDP';"
+docker exec -it mblga-mysql mysql -u root -pANCIEN_MDP -e "ALTER USER 'root'@'%' IDENTIFIED BY 'NOUVEAU_MDP';"
 # Puis mettre à jour DB_PASSWORD dans docker-compose.yml et redémarrer :
 docker compose up -d
 ```
@@ -469,10 +474,10 @@ docker compose up -d
 mkdir -p /opt/backups
 
 # Exporter la base de données
-docker exec ageo-mysql mysqldump -u root -pVOTRE_MDP ageo > /opt/backups/ageo_$(date +%Y-%m-%d_%H%M).sql
+docker exec mblga-mysql mysqldump -u root -pVOTRE_MDP mblga > /opt/backups/mblga_$(date +%Y-%m-%d_%H%M).sql
 
 # Sauvegarder les uploads
-tar -czf /opt/backups/uploads_$(date +%Y-%m-%d).tar.gz /opt/ageo/server/uploads/
+tar -czf /opt/backups/uploads_$(date +%Y-%m-%d).tar.gz /opt/mblga-app/server/uploads/
 ```
 
 ### 9.2 Sauvegarde automatique (cron)
@@ -485,7 +490,7 @@ Ajouter :
 
 ```cron
 # Sauvegarde quotidienne à 3h du matin
-0 3 * * * docker exec ageo-mysql mysqldump -u root -pVOTRE_MDP ageo > /opt/backups/ageo_$(date +\%Y-\%m-\%d).sql && find /opt/backups -name "ageo_*.sql" -mtime +30 -delete
+0 3 * * * docker exec mblga-mysql mysqldump -u root -pVOTRE_MDP mblga > /opt/backups/mblga_$(date +\%Y-\%m-\%d).sql && find /opt/backups -name "mblga_*.sql" -mtime +30 -delete
 ```
 
 ---
@@ -493,7 +498,7 @@ Ajouter :
 ## 10. Mise à jour de l'application
 
 ```bash
-cd /opt/ageo
+cd /opt/mblga-app
 git pull
 docker compose up -d --build
 ```
@@ -511,13 +516,13 @@ docker compose up -d --build
 | Voir les logs Traefik              | `cd /opt/traefik && docker compose logs -f traefik`        |
 | Redémarrer l'app                  | `docker compose restart app`                                |
 | Redémarrer Traefik                | `cd /opt/traefik && docker compose restart traefik`        |
-| Arrêter AGEO                       | `docker compose down`                                       |
+| Arrêter MBLGA                       | `docker compose down`                                       |
 | Arrêter Traefik                   | `cd /opt/traefik && docker compose down`                   |
 | Arrêter + supprimer données      | `docker compose down -v`                                    |
 | Statut des conteneurs              | `docker compose ps`                                         |
-| Accéder au shell du conteneur app | `docker exec -it ageo-app sh`                               |
-| Accéder à MySQL                  | `docker exec -it ageo-mysql mysql -u root -pVOTRE_MDP ageo` |
-| Dashboard Traefik                 | `https://traefik.mbila-service.com`                         |
+| Accéder au shell du conteneur app | `docker exec -it mblga-app sh`                               |
+| Accéder à MySQL                  | `docker exec -it mblga-mysql mysql -u root -pVOTRE_MDP mblga` |
+| Dashboard Traefik                 | `https://traefik.mbila.pro`                         |
 
 ---
 
@@ -536,12 +541,12 @@ Vérifier :
 - Le port 80 n'est pas déjà utilisé : `ss -tlnp | grep :80`
 - Le port 443 n'est pas déjà utilisé : `ss -tlnp | grep :443`
 - Traefik est bien démarré : `cd /opt/traefik && docker compose ps`
-- Le domaine pointe bien vers le VPS : `dig ageo.mbila-service.com`
+- Le domaine pointe bien vers le VPS : `dig mblga.mbila.pro`
 
 ### Erreur de connexion MySQL
 
 ```bash
-docker exec ageo-mysql mysql -u root -pVOTRE_MDP -e "SHOW DATABASES;"
+docker exec mblga-mysql mysql -u root -pVOTRE_MDP -e "SHOW DATABASES;"
 ```
 
 ### Erreur SSL / Certificat non généré
@@ -576,7 +581,7 @@ curl -fsSL https://get.docker.com | sh
 apt install -y git
 
 # 3. Projet
-cd /opt && git clone https://github.com/rochrmt/Ageo.git ageo && cd ageo
+cd /opt && git clone https://github.com/rochrmt/MBLGA.git mblga-app && cd mblga-app
 
 # 4. Traefik (reverse proxy + SSL auto)
 docker network create traefik-proxy
@@ -586,13 +591,13 @@ cp traefik/dynamic/dynamic.yml /opt/traefik/dynamic/
 nano /opt/traefik/docker-compose.yml   # email + domaine dashboard
 cd /opt/traefik && docker compose up -d
 
-# 5. Configurer AGEO
-cd /opt/ageo
+# 5. Configurer MBLGA
+cd /opt/mblga-app
 nano docker-compose.yml   # domaine + JWT_SECRET + mots de passe
 
 # 6. Démarrer
 docker compose up -d --build
 
 # 7. Accéder
-https://ageo.mbila-service.com
+https://mblga.mbila.pro
 ```

@@ -40,7 +40,7 @@ router.get('/', async (_req, res) => {
     )
     res.json(rows)
   } catch (err) {
-    console.error('[AGEO] factures GET:', err.message)
+    console.error('[MBLGA] factures GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des factures' })
   }
 })
@@ -123,7 +123,7 @@ router.post('/', async (req, res) => {
     await log(req, { module: 'Facturation', action: 'Création', description: `Document créé : ${numero}` })
     res.status(201).json({ id, numero })
   } catch (err) {
-    console.error('[AGEO] factures POST:', err.message)
+    console.error('[MBLGA] factures POST:', err.message)
     res.status(500).json({ error: 'Erreur lors de la création du document' })
   }
 })
@@ -185,7 +185,7 @@ router.put('/:id', async (req, res) => {
     await log(req, { module: 'Facturation', action: 'Modification', description: `Document modifié : ${existing.numero}` })
     res.json({ ok: true, numero: existing.numero })
   } catch (err) {
-    console.error('[AGEO] factures PUT:', err.message)
+    console.error('[MBLGA] factures PUT:', err.message)
     res.status(500).json({ error: 'Erreur lors de la modification du document' })
   }
 })
