@@ -2,6 +2,7 @@
 const express = require('express')
 const db = require('../db/database')
 const { log } = require('../utils/journal')
+const { nextNumero, withNumeroRetry } = require('../utils/numerotation')
 
 const router = express.Router()
 
@@ -170,36 +171,33 @@ router.post('/:id/facture', async (req, res) => {
 
     const client = await db.getOne('SELECT * FROM clients WHERE id = ?', [c.client_id])
 
-    // Numérotation facture
-    const row = await db.getOne(
-      "SELECT COUNT(*) AS n FROM factures WHERE type_document = 'facture_definitive'",
-    )
-    const numero = `FAC-${String((row?.n || 0) + 1).padStart(5, '0')}`
-
     const montant = Number(c.montant) || 0
     const echeanceStr = toDateString(c.prochaine_echeance)
     const ligneDesc = c.type === 'abonnement'
       ? `${c.intitule} — ${c.periodicite} (échéance ${echeanceStr || '—'})`
       : c.intitule
 
-    const facId = await db.insert(
-      `INSERT INTO factures
-         (numero, type_document, client_id, commande_id, date_echeance, statut,
-          total_ht, taux_tva, montant_tva, total_ttc, remise_globale, avance, reste_a_payer,
-          notes, client_nom_libre, client_adresse_libre, objet, signature_auto,
-          conditions_reglement, mode_reglement)
-       VALUES (?, 'facture_definitive', ?, NULL, ?, 'brouillon', ?, 0, 0, ?, 0, 0, ?, ?, ?, ?, ?, 0, NULL, NULL)`,
-      [numero, c.client_id, echeanceStr,
-       montant, montant, montant,
-       `Facture générée depuis ${c.type === 'abonnement' ? 'abonnement' : 'contrat'} ${c.reference}`,
-       client?.nom || null, client?.adresse || null, c.intitule],
-    )
-
-    await db.run(
-      `INSERT INTO lignes_facture (facture_id, reference, description, quantite, prix_unitaire, remise, total)
-       VALUES (?, ?, ?, 1, ?, 0, ?)`,
-      [facId, c.reference, ligneDesc, montant, montant],
-    )
+    const { id: facId, numero } = await withNumeroRetry(() => db.transaction(async (tq) => {
+      const numero = await nextNumero(tq, 'facture_definitive')
+      const facId = await tq.insert(
+        `INSERT INTO factures
+           (numero, type_document, client_id, commande_id, date_echeance, statut,
+            total_ht, taux_tva, montant_tva, total_ttc, remise_globale, avance, reste_a_payer,
+            notes, client_nom_libre, client_adresse_libre, objet, signature_auto,
+            conditions_reglement, mode_reglement)
+         VALUES (?, 'facture_definitive', ?, NULL, ?, 'brouillon', ?, 0, 0, ?, 0, 0, ?, ?, ?, ?, ?, 0, NULL, NULL)`,
+        [numero, c.client_id, echeanceStr,
+         montant, montant, montant,
+         `Facture générée depuis ${c.type === 'abonnement' ? 'abonnement' : 'contrat'} ${c.reference}`,
+         client?.nom || null, client?.adresse || null, c.intitule],
+      )
+      await tq.run(
+        `INSERT INTO lignes_facture (facture_id, reference, description, quantite, prix_unitaire, remise, total)
+         VALUES (?, ?, ?, 1, ?, 0, ?)`,
+        [facId, c.reference, ligneDesc, montant, montant],
+      )
+      return { id: facId, numero }
+    }))
 
     await log(req, { module: 'Contrats', action: 'Facturation', description: `Facture ${numero} générée depuis contrat ${c.reference}` })
     res.status(201).json({ id: facId, numero })

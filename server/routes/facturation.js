@@ -2,6 +2,7 @@
 const express = require('express')
 const db = require('../db/database')
 const { log } = require('../utils/journal')
+const { nextNumero, withNumeroRetry } = require('../utils/numerotation')
 
 const router = express.Router()
 
@@ -22,10 +23,17 @@ function computeTotals(lignes, tauxTva, remiseGlobale, avance) {
   return { totalHt, tva, totalTtc, net, reste }
 }
 
-const PREFIXES = {
-  bon_livraison:      'BL',
-  facture_proforma:   'PRO',
-  facture_definitive: 'FAC',
+// Sérialise une DATE SQL en 'YYYY-MM-DD' (évite les décalages de fuseau
+// horaire côté client : un objet Date JSON devient "...T22:00:00.000Z").
+function dateOnly(v) {
+  return v instanceof Date ? v.toLocaleDateString('sv-SE') : v
+}
+
+function serializeDates(f) {
+  if (!f) return f
+  f.date_emission = dateOnly(f.date_emission)
+  f.date_echeance = dateOnly(f.date_echeance)
+  return f
 }
 
 // GET /api/facturation
@@ -38,7 +46,7 @@ router.get('/', async (_req, res) => {
          LEFT JOIN commandes cmd ON cmd.id = f.commande_id
         ORDER BY f.date_emission DESC, f.id DESC`,
     )
-    res.json(rows)
+    res.json(rows.map(serializeDates))
   } catch (err) {
     console.error('[MBLGA] factures GET:', err.message)
     res.status(500).json({ error: 'Erreur lors du chargement des factures' })
@@ -58,20 +66,11 @@ router.get('/:id', async (req, res) => {
     )
     if (!f) return res.status(404).json({ error: 'Facture introuvable' })
     f.lignes = await db.getAll('SELECT * FROM lignes_facture WHERE facture_id = ?', [req.params.id])
-    res.json(f)
+    res.json(serializeDates(f))
   } catch (err) {
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })
-
-async function nextNumero(tq, type) {
-  const prefix = PREFIXES[type] || 'FAC'
-  const row = await tq.getOne(
-    `SELECT COUNT(*) AS n FROM factures WHERE type_document = ?`, [type],
-  )
-  const seq = String((row?.n || 0) + 1).padStart(5, '0')
-  return `${prefix}-${seq}`
-}
 
 // POST /api/facturation
 router.post('/', async (req, res) => {
@@ -90,7 +89,7 @@ router.post('/', async (req, res) => {
   try {
     const { totalHt, tva, totalTtc, reste } = computeTotals(lignes, taux_tva, remise_globale, avance)
 
-    const { id, numero } = await db.transaction(async (tq) => {
+    const { id, numero } = await withNumeroRetry(() => db.transaction(async (tq) => {
       const numero = await nextNumero(tq, type_document)
       const facId = await tq.insert(
         `INSERT INTO factures
@@ -109,17 +108,17 @@ router.post('/', async (req, res) => {
       for (const l of lignes) {
         await tq.run(
           `INSERT INTO lignes_facture
-             (facture_id, reference, description, quantite, qte_commandee, qte_livree,
+             (facture_id, reference, description, unite, quantite, qte_commandee, qte_livree,
               prix_unitaire, main_oeuvre, remise, total)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [facId, l.reference || null, l.description || '',
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [facId, l.reference || null, l.description || '', l.unite || null,
            Number(l.quantite) || 0, Number(l.qte_commandee) || 0, Number(l.qte_livree) || 0,
            Number(l.prix_unitaire) || 0, Number(l.main_oeuvre) || 0, Number(l.remise) || 0,
            ligneTotal(l)],
         )
       }
       return { id: facId, numero }
-    })
+    }))
     await log(req, { module: 'Facturation', action: 'Création', description: `Document créé : ${numero}` })
     res.status(201).json({ id, numero })
   } catch (err) {
@@ -171,10 +170,10 @@ router.put('/:id', async (req, res) => {
       for (const l of lignes) {
         await tq.run(
           `INSERT INTO lignes_facture
-             (facture_id, reference, description, quantite, qte_commandee, qte_livree,
+             (facture_id, reference, description, unite, quantite, qte_commandee, qte_livree,
               prix_unitaire, main_oeuvre, remise, total)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [req.params.id, l.reference || null, l.description || '',
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [req.params.id, l.reference || null, l.description || '', l.unite || null,
            Number(l.quantite) || 0, Number(l.qte_commandee) || 0, Number(l.qte_livree) || 0,
            Number(l.prix_unitaire) || 0, Number(l.main_oeuvre) || 0, Number(l.remise) || 0,
            ligneTotal(l)],

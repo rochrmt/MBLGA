@@ -466,6 +466,7 @@ async function runMigrations() {
   }
   for (const [col, type] of [
     ['reference',     'VARCHAR(100) NULL'],
+    ['unite',         'VARCHAR(50) NULL'],
     ['qte_commandee', 'DOUBLE DEFAULT 0'],
     ['qte_livree',    'DOUBLE DEFAULT 0'],
     ['main_oeuvre',   'DOUBLE DEFAULT 0'],
